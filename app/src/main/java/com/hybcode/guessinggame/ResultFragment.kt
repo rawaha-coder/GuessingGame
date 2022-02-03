@@ -5,7 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.findNavController
 import com.hybcode.guessinggame.databinding.FragmentResultBinding
 
@@ -20,7 +34,17 @@ class ResultFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentResultBinding.inflate(inflater, container, false)
+        _binding = FragmentResultBinding.inflate(inflater, container, false).apply {
+            composeView.setContent {
+                MaterialTheme {
+                    Surface {
+                        view?.let {
+                            ResultFragmentContent(it, viewModel)
+                        }
+                    }
+                }
+            }
+        }
         val view = binding.root
 
         val result: String = ResultFragmentArgs.fromBundle(requireArguments()).result
@@ -41,5 +65,29 @@ class ResultFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+}
+
+@Composable
+fun ResultFragmentContent(view: View, viewModel: ResultViewModel) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        ResultText(viewModel.result)
+        NewGameButton {
+            view.findNavController().navigate(R.id.action_resultFragment_to_gameFragment)
+        }
+    }
+}
+
+@Composable
+fun ResultText(result: String){
+        Text(text = result, fontSize = 28.sp, textAlign = TextAlign.Center)
+}
+
+@Composable
+fun NewGameButton(clicked: () -> Unit) {
+    Button(onClick = clicked) {
+        Text(text = "Start New game")
     }
 }
