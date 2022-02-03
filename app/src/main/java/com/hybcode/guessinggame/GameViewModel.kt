@@ -10,7 +10,6 @@ class GameViewModel: ViewModel() {
     private val secretWord = words.random().uppercase()
     private var correctGuesses = ""
 
-
     private val _secretWordDisplay = MutableLiveData<String>()
     val secretWordDisplay: LiveData<String> get() = _secretWordDisplay
 
